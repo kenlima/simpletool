@@ -1,0 +1,9 @@
+----- To do -----
+- learn to get log in real time (logstash, elastic search, kibana, redis)
+- porting to sql formatter
+
+
+
+----- Done ------
+- push project from GitHub
+
