@@ -1,0 +1,25 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Getting Started: Serving Web Content</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<h3>SQL 바인드 변수 매핑기</h3>
+컨텐츠관리 SQL로그를 긁어서 아래 인풋박스에 붙여넣기 하면 됨
+<br></br>
+로그에서 SQL이 출력되는 라인부터 파라메터가 출력되는 라인까지 긁어서 붙이면 됩니다.
+<br></br>
+필요조건 : Preparing 키워드가 있는 한줄, Parameters 키워드가 있는 한줄
+<br></br>
+그냥 공부차 발코딩 한거고 에러처리 하나도 안되어 있으니 에러나면 조용히 나한테 와서 이야기 해주길 바랍니. 음료수 하나 사줌. 
+<br></br>
+사용기술 : spring boot, lamda, thymeleaf, gsp
+<br></br>
+	<form action="/sqlmappingresult" method="post">
+		<textarea name="inputSql" cols="150" rows="10"></textarea>
+		<br></br>
+		<button type="submit">Run</button>
+	</form>
+</body>
+</html>
