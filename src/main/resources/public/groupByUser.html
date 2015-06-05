@@ -10,6 +10,7 @@
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
         <script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
         <link rel="stylesheet" href="common.css">
+        <script src="common.js"></script>
         <script src="groupByUser.js"></script>
     </head>
     
@@ -24,10 +25,10 @@
                     <div class="col-md-12">
                         <ul class="nav nav-pills">
                             <li class="active">
-                                <a id="btnGroupByUser" href="/groupByUser.html">유저별</a>
+                                <a id="btnGroupByUser" href="/groupByUser.html?menu=1">유저별</a>
                             </li>
                             <li>
-                                <a id="btnGroupByJikmoo" href="/groupByJikmoo.html">직무별</a>
+                                <a id="btnGroupByJikmoo" href="/groupByJikmoo.html?menu=2">직무별</a>
                             </li>
                         </ul>
                     </div>
@@ -60,7 +61,6 @@
             <div class="container">
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="row">logCount: 333232, time: 223 sec</div>
                         <table class="table" id="dataTable">
                             <thead>
                                 <tr>

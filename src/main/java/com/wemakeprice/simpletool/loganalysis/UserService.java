@@ -1,4 +1,4 @@
-package com.wemakeprice.wmputilweb;
+package com.wemakeprice.simpletool.loganalysis;
 
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -36,11 +36,11 @@ public class UserService {
         user.setUserCd(arr[0]);
         user.setUserName(arr[6]);
         user.setJikmooCd(arr[17]);
-        user.setJikmooName(CommonData.getJikmoo(arr[17]));
+        user.setJikmooName(MyCommonData.getJikmoo(arr[17]));
         user.setJikchakCd(arr[19].trim().equalsIgnoreCase("null") ? "" : arr[19]);
-        user.setJikchakName(CommonData.getJikchak(arr[19]));
+        user.setJikchakName(MyCommonData.getJikchak(arr[19]));
         user.setJikgubCd(arr[15]);
-        user.setJikgubName(CommonData.getJikgub(arr[15]));
+        user.setJikgubName(MyCommonData.getJikgub(arr[15]));
         return user;
     }
 

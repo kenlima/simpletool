@@ -1,4 +1,4 @@
-package com.wemakeprice.wmputilweb;
+package com.wemakeprice.simpletool.loganalysis;
 
 import java.io.File;
 import java.io.IOException;
@@ -99,7 +99,7 @@ public class LogReportService {
         log.setUserCd(userArr[1].trim());
         log.setJikmooCd(userService.getUser(log.getUserCd()).getJikmooCd());
         log.setJikchakCd(userService.getUser(log.getUserCd()).getJikchakCd());
-        log.setUrlName(CommonData.getUrl(urlArr[0]));
+        log.setUrlName(MyCommonData.getUrl(urlArr[0]));
         log.setUrl(urlArr[0]);
 
         return log;
@@ -120,7 +120,15 @@ public class LogReportService {
     }
 
     private static boolean isRangedFile(File p, String fromDate, String toDate) {
-        String fileDay = p.getName().split("[.]")[2];
+
+        String[] tmp = p.getName().split("[.]");
+        String fileDay = null;
+        if (tmp.length == 2) {
+            fileDay = getCurrentDate();
+        } else {
+            fileDay = p.getName().split("[.]")[2];
+        }
+
         LocalDate fileLocalDate = parseLocalDate(fileDay);
         LocalDate fromLocalDate = parseLocalDate(fromDate);
         LocalDate toLocalDate = parseLocalDate(toDate);
@@ -133,6 +141,11 @@ public class LogReportService {
         }
 
         return false;
+    }
+
+    private static String getCurrentDate() {
+        LocalDate today = LocalDate.now();
+        return today.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
     }
 
     private static LocalDate parseLocalDate(String fileDay) {
@@ -158,7 +171,7 @@ public class LogReportService {
     public static Map<String, String> getMapForJikmoo(Entry<String, List<Log>> entry) {
         Map<String, String> map = new HashMap<>();
         map.put("jikmooCd", entry.getKey());
-        map.put("jikmoo", CommonData.getJikmoo(entry.getKey()));
+        map.put("jikmoo", MyCommonData.getJikmoo(entry.getKey()));
         map.put("cnt", String.valueOf(entry.getValue().size()));
         return map;
     }
@@ -173,7 +186,7 @@ public class LogReportService {
     public static Map<String, String> getMapForUrl(Entry<String, List<Log>> entry) {
         Map<String, String> map = new HashMap<>();
         map.put("rank", "1");
-        map.put("urlName", CommonData.getUrl(entry.getKey()));
+        map.put("urlName", MyCommonData.getUrl(entry.getKey()));
         map.put("url", entry.getKey());
         map.put("cnt", String.valueOf(entry.getValue().size()));
         return map;
@@ -182,7 +195,7 @@ public class LogReportService {
     public static Map<String, String> getMapForJikchak(Entry<String, List<Log>> entry) {
         Map<String, String> map = new HashMap<>();
         map.put("jikchakCd", entry.getKey());
-        map.put("jikchak", CommonData.getJikchak(entry.getKey()));
+        map.put("jikchak", MyCommonData.getJikchak(entry.getKey()));
         map.put("cnt", String.valueOf(entry.getValue().size()));
         return map;
     }

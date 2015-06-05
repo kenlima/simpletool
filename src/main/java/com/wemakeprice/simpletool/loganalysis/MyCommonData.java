@@ -1,9 +1,9 @@
-package com.wemakeprice.wmputilweb;
+package com.wemakeprice.simpletool.loganalysis;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class CommonData {
+public class MyCommonData {
     public static Map<String, String> jikmooMap = new HashMap<>();
     public static Map<String, String> jikchakMap = new HashMap<>();
 

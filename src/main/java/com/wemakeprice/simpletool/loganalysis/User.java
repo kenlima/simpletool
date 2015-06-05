@@ -1,4 +1,4 @@
-package com.wemakeprice.wmputilweb;
+package com.wemakeprice.simpletool.loganalysis;
 
 public class User {
     private String userCd;

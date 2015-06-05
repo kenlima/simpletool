@@ -1,4 +1,5 @@
-package com.wemakeprice.wmputilweb;
+package com.wemakeprice.simpletool.loganalysis;
+
 
 public class GroupByUser {
     private User user;

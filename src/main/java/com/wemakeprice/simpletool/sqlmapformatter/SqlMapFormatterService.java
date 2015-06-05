@@ -1,4 +1,4 @@
-package com.wemakeprice.wmputilweb;
+package com.wemakeprice.simpletool.sqlmapformatter;
 
 import gudusoft.gsqlparser.EDbVendor;
 import gudusoft.gsqlparser.TGSqlParser;
@@ -11,14 +11,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.springframework.stereotype.Service;
 
 @Service
-public class SqlMappingService {
-
-    public SqlMappingResult mappingSql(InputSqlForm inputSqlForm) {
+public class SqlMapFormatterService {
+    public SqlMappingResult mappingSql(String inputSql) {
         SqlMappingResult result = new SqlMappingResult();
-        String data = inputSqlForm.getInputSql();
+        String data = inputSql;
+        // 15:58:46,515 INFOD  [stdout] (default task-11)
+        data = data.replaceAll(
+                "[0-9]{2}:[0-9]{2}:[0-9]{2},[0-9]{3} [A-Z]{4,5}  \\[stdout\\] \\(default task-[0-9]+\\)", "");
         List<String> parameters = new ArrayList<>();
         String inputQuery = "";
 
@@ -53,11 +56,10 @@ public class SqlMappingService {
             //parameters.replaceAll(String::trim);
 
             //parameters.stream().map(s -> replaceTypeValue(s));
-            parameters.replaceAll(SqlMappingService::replaceTypeValue);
+            parameters.replaceAll(SqlMapFormatterService::replaceTypeValue);
 
         }
         inputQuery = parseQuery(inputQuery);
-        System.out.println("Input Query : " + inputQuery);
         System.out.println("Parameters : " + String.join(", ", parameters));
 
         StringBuffer mappedQuerySb = new StringBuffer();
@@ -71,7 +73,8 @@ public class SqlMappingService {
             }
             mappedQuerySb.append(inputQuery.substring(q1, q2));
 
-            mappedQuerySb.append("<span style='font-weight:bold;color:black'>" + parameters.get(parameterIdx).trim() +"</span>");
+            mappedQuerySb.append("<span style='font-weight:bold;color:black'>" + parameters.get(parameterIdx).trim()
+                    + "</span>");
             q1 = q2 + 1;
             parameterIdx++;
         }
@@ -84,16 +87,17 @@ public class SqlMappingService {
     }
 
     private String parseQuery(String result) {
-        System.out.println("query : " + result);
+        System.out.println("extracted sql : " + result);
         TGSqlParser sqlparser = new TGSqlParser(EDbVendor.dbvmysql);
         sqlparser.setSqltext(result);
         int ret = sqlparser.parse();
-        if(ret == 0) {
+        if (ret == 0) {
             GFmtOpt option = GFmtOptFactory.newInstance();
             option.outputFmt = GOutputFmt.ofhtml;
             result = FormatterFactory.pp(sqlparser, option);
             System.out.println(result);
         }
+        System.out.println("parsed sql : " + result);
         return result;
     }
 
@@ -104,8 +108,11 @@ public class SqlMappingService {
             name = "'" + name.substring(0, idx - 1) + "'";
         } else if ((idx = name.indexOf("Integer")) > -1) {
             name = name.substring(0, idx - 1);
+        } else if ((idx = name.indexOf("Long")) > -1) {
+            name = name.substring(0, idx - 1);
         }
+        //name = name.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+        name = StringEscapeUtils.escapeHtml(name);
         return name;
     }
-
 }

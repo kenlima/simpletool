@@ -1,7 +1,4 @@
 $(document).ready(function() {
-	// 메뉴영역 include
-	$("#menu").load("menu.html");
-	
 	//alert(getUrlParameter("fromDate"));
 	$('#fromDate').val(function(i, inputTxt){
 		var cookieValue = $.cookie('fromDate');
@@ -221,5 +218,4 @@ function getUrlParameter(sParam)
         }
     }
 } 
-
 
