@@ -3,7 +3,7 @@
 SIMPLETOOL_HOME=/usr/local/simpletool
 PIDPATH=$SIMPLETOOL_HOME/pid
 PIDFILE=$PIDPATH/simpletool.pid
-STARTSHELL=$SIMPLETOOL_HOME/java -jar simpletool-0.1.0.jar > simpletool.log &
+STARTSHELL=`java -Dspring.profiles.active=real -jar $SIMPLETOOL_HOME/simpletool-0.1.0.jar > $SIMPLETOOL_HOME/simpletool.log &`
 PID=0
 
 if [ ! -d "$PIDPATH" ]; then
@@ -39,7 +39,7 @@ case "$1" in
         fi
 
         echo "Starting SimpleTool Server ... ... ..."
-        $STARTSHELL
+        echo $STARTSHELL
         sleep 5 
         PID=`cat $PIDFILE`
         echo "SimpleTool Service pid $PID running...."
