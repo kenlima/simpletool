@@ -27,7 +27,7 @@ function bindData(requestData) {
 	
 	jqxhr.done(function(data, textStatus) {
 		$('#formattedSql').html(data.sql);
-		$('#formattedParameter').html(data.parameter);
+		$('#formattedParameter').html(data.parameters);
 	})
 	jqxhr.fail(function(jqXHR, textStatus, errorThrown){
 		alert(errorThrown)

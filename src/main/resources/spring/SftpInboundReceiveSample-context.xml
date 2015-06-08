@@ -15,7 +15,7 @@
 			remote-directory="/usr/local/jboss-as/standalone/log"
 			auto-create-local-directory="true"
 			delete-remote-files="false"
-			filename-regex="contents-info[\.log]*[\.]*[0-9]*\.log$">
+			filename-regex="contents-info\.log\.[0-9]*\.log$">
 		<int:poller fixed-rate="1000" max-messages-per-poll="1"/>
 	</int-sftp:inbound-channel-adapter>
 
