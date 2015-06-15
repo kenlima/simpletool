@@ -21,16 +21,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 @EnableScheduling
 public class Application {
 
-    @Value("${ssh1.host}")
-    private String host;
-    @Value("${ssh.privateKey}")
-    private String privateKey;
-    @Value("${ssh1.user}")
-    String user;
-
-    @Value("${ssh1.port}")
-    private int port;
-
     @Value("${log1.path}")
     private String log1Path;
 
@@ -44,7 +34,7 @@ public class Application {
 
     }
 
-    @Scheduled(cron ="* * 1 * * ?")
+    @Scheduled(cron = "* * 1 * * ?")
     public void getLog() {
 
         try {
@@ -75,7 +65,7 @@ public class Application {
                 + fileToDownload;
 
         // Create local file object
-        
+
         String filepath = localDirectory + fileToDownload;
         File file = new File(filepath);
         FileObject localFile = manager.resolveFile(file.getAbsolutePath());
