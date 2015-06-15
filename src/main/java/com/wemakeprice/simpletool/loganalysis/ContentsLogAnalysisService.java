@@ -18,17 +18,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.wemakeprice.simpletool.DateUtil;
+
 @Service
-public class LogReportService {
+public class ContentsLogAnalysisService {
 
     @Autowired
     public UserService userService;;
-    private String logPath;
 
-    @Autowired
-    public LogReportService(@Value("${log.path}") String logPath) {
-        this.logPath = logPath;
-    }
+    @Value("${log1.path}")
+    private String logPath;
 
     private Comparator<Entry<String, List<Log>>> sortByCount = (entry1, entry2) -> new Integer(entry1.getValue().size())
             .compareTo(new Integer(entry2.getValue().size()));
@@ -71,7 +70,7 @@ public class LogReportService {
 
         List<File> files = getFiles(fromDate, toDate);
 
-        Stream<List<String>> lineStream = files.stream().map(LogReportService::getLines);
+        Stream<List<String>> lineStream = files.stream().map(ContentsLogAnalysisService::getLines);
         List<Log> allLines = lineStream.flatMap(perLines -> perLines.stream()).filter(lineFilter())
                 .map(line -> parseLine(line)).collect(Collectors.toList());
         return allLines;
@@ -79,12 +78,14 @@ public class LogReportService {
 
     private static Predicate<? super String> lineFilter() {
         Predicate<String> keyword1 = line -> line.contains("RequestInfo:");
-        Predicate<String> keyword2 = line -> !line.contains(".json");
+        //Predicate<String> keyword2 = line -> !line.contains(".json");
         Predicate<String> keyword3 = line -> !line.contains("/contents/getContentsListFirst.wmp");
         Predicate<String> keyword4 = line -> !line.contains("/contents/common/getProductCategoryList");
         Predicate<String> keyword5 = line -> !line.contains("/index.wmp");
         Predicate<String> keyword6 = line -> !line.contains("/contents/saveMailSender.wmp");
-        return keyword1.and(keyword2).and(keyword3).and(keyword4).and(keyword5).and(keyword6);
+        //        Predicate<? super String> result = keyword1.and(keyword2).and(keyword3).and(keyword4).and(keyword5).and(keyword6); 
+        Predicate<? super String> result = keyword1.and(keyword3).and(keyword4).and(keyword5);
+        return result;
     }
 
     public Log parseLine(String line) {
@@ -124,7 +125,7 @@ public class LogReportService {
         String[] tmp = p.getName().split("[.]");
         String fileDay = null;
         if (tmp.length == 2) {
-            fileDay = getCurrentDate();
+            fileDay = DateUtil.getCurrentDate();
         } else {
             fileDay = p.getName().split("[.]")[2];
         }
@@ -143,10 +144,7 @@ public class LogReportService {
         return false;
     }
 
-    private static String getCurrentDate() {
-        LocalDate today = LocalDate.now();
-        return today.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-    }
+
 
     private static LocalDate parseLocalDate(String fileDay) {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMdd");
@@ -242,7 +240,7 @@ public class LogReportService {
 
         List<File> files = getFiles(fromDate, toDate);
 
-        Stream<List<String>> lineStream = files.stream().map(LogReportService::getLines);
+        Stream<List<String>> lineStream = files.stream().map(ContentsLogAnalysisService::getLines);
         List<Log> logs = lineStream.flatMap(perLines -> perLines.stream()).filter(lineFilter())
                 .map(line -> parseLine(line)).filter(log -> log.getUserCd().equals(userCd)).sorted(comparator)
                 .collect(Collectors.toList());

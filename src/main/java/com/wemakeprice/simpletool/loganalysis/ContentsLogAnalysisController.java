@@ -19,7 +19,7 @@ public class ContentsLogAnalysisController {
     private static final Logger logger = LoggerFactory.getLogger(ContentsLogAnalysisController.class);
 
     @Autowired
-    private LogReportService logReportService;
+    private ContentsLogAnalysisService logReportService;
 
     @RequestMapping(value = "/groupByJikmoo", method = RequestMethod.GET)
     public List<Map<String, String>> pageCountPerJikmoo(@RequestParam(value = "fromDate") String fromDate,
