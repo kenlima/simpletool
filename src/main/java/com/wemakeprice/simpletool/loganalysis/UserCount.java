@@ -1,7 +1,7 @@
 package com.wemakeprice.simpletool.loganalysis;
 
 
-public class GroupByUser {
+public class UserCount {
     private User user;
     private String count;
 

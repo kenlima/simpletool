@@ -21,6 +21,14 @@ public class ContentsLogAnalysisController {
     @Autowired
     private ContentsLogAnalysisService logReportService;
 
+    /**
+     * 직무별
+     * 
+     * @param fromDate
+     * @param toDate
+     * @return
+     * @throws Exception
+     */
     @RequestMapping(value = "/groupByJikmoo", method = RequestMethod.GET)
     public List<Map<String, String>> pageCountPerJikmoo(@RequestParam(value = "fromDate") String fromDate,
             @RequestParam(value = "toDate") String toDate) throws Exception {
@@ -46,10 +54,27 @@ public class ContentsLogAnalysisController {
     }
 
     @RequestMapping("/groupByUser")
-    public List<GroupByUser> pageRankGroupByUser(@RequestParam(value = "fromDate") String fromDate, @RequestParam(
+    public List<UserCount> pageRankGroupByUser(@RequestParam(value = "fromDate") String fromDate, @RequestParam(
             value = "toDate") String toDate) throws Exception {
 
-        List<GroupByUser> result = logReportService.getPageRankGroupByUser(fromDate, toDate);
+        List<UserCount> result = logReportService.getPageRankGroupByUser(fromDate, toDate);
+        return result;
+    }
+
+    @RequestMapping("/groupByUrl")
+    public List<Map<String, String>> pageRankGroupByUrl(@RequestParam(value = "fromDate") String fromDate,
+            @RequestParam(value = "toDate") String toDate) throws Exception {
+
+        List<Map<String, String>> result = logReportService.getPageRankGroupByUrl(fromDate, toDate);
+        return result;
+    }
+
+    @RequestMapping("/groupByUserPerUrl")
+    public List<UserCount> groupByUserPerUrl(@RequestParam String url,
+            @RequestParam(value = "fromDate") String fromDate, @RequestParam(value = "toDate") String toDate)
+            throws Exception {
+
+        List<UserCount> result = logReportService.groupByUserPerUrl(url, fromDate, toDate);
         return result;
     }
 

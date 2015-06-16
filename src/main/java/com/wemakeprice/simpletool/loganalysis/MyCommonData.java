@@ -113,7 +113,7 @@ public class MyCommonData {
         if (urlMap.containsKey(cd)) {
             return urlMap.get(cd);
         }
-        return cd;
+        return "";
     }
 
     public static String getJikgub(String cd) {

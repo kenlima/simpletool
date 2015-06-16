@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
     
-    <head>
+<head>
+
         <title>Contents Manager Tool</title>
         <meta charset="utf-8">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
@@ -9,28 +10,30 @@
         <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
         <script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-        <link rel="stylesheet" href="common.css">
-        <script src="common.js"></script>
-        <script src="groupByUser.js"></script>
-    </head>
-    
-    <body>
+
+	<link rel="stylesheet" href="common.css">
+	<script src="common.js"></script>
+	<script src="groupByUrl.js"></script>
+		
+</head>	
+        
+<body>
+
         <!-- menu -->
     <div id="menu"></div>
-        
         
         <div class="section">
             <div class="container">
                 <div class="row">
                     <div class="col-md-12">
                         <ul class="nav nav-pills">
-                            <li class="active">
+                            <li>
                                 <a id="btnGroupByUser" href="/groupByUser.html?menu=1">유저별</a>
                             </li>
                             <li>
                                 <a id="btnGroupByJikmoo" href="/groupByJikmoo.html?menu=2">직무별</a>
                             </li>
-                            <li>
+                            <li class="active">
                                 <a id="btnGroupByUrl" href="/groupByUrl.html?menu=2">Url별</a>
                             </li>
                         </ul>
@@ -38,16 +41,16 @@
                 </div>
             </div>
         </div>
+        
         <div class="section">
             <div class="container">
                 <div class="row">
                     <div class="col-md-12">
-                        <form name="searchFrm" class="form-inline" id="searchFrm" method="get"
-                        action="">
+                        <form name="searchFrm" class="form-inline" id="searchFrm" method="get" action="">
                             <div class="form-group">
                                 <label for="exampleInputName2">Date</label>
-                                <input name="fromDate" class="form-control" id="fromDate"
-                                placeholder="YYYYMMDD" type="number">
+                                <input name="fromDate" class="form-control" id="fromDate" placeholder="YYYYMMDD"
+                                type="number">
                             </div>
                             <div class="form-group">
                                 <label for="exampleInputEmail2">~</label>
@@ -59,7 +62,8 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div>     
+   
         <div class="section">
             <div class="container">
                 <div class="row">
@@ -68,12 +72,9 @@
                             <thead>
                                 <tr>
                                     <th>Rank</th>
-                                    <th>사번</th>
-                                    <th>직무</th>
-                                    <th>직책</th>
-                                    <th>직급</th>
-                                    <th>이름</th>
-                                    <th>RequestCount</th>
+                                    <th>UrlName</th>
+                                    <th>Url</th>
+                                    <th>ReqCnt</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>
@@ -84,7 +85,8 @@
                 </div>
             </div>
         </div>
-        <!-- 접속기록보기 modal -->
+        
+        <!-- per users -->
         <div class="modal fade" id="myModal">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
@@ -94,13 +96,16 @@
                     </div>
                     <div class="modal-body">
                         <p>One fine body...</p>
-                        <table class="table" id="pageRankPerJikmoo">
+                        <table class="table" id="perUsers">
                             <thead>
                                 <tr>
-                                    <th>No</th>
-                                    <th>Date</th>
-                                    <th>UrlName</th>
-                                    <th>Url</th>
+                                    <th>Rank</th>
+                                    <th>ReqCount</th>
+                                    <th>empNo</th>
+                                    <th>Name</th>
+                                    <th>Duty</th>
+                                    <th>Position</th>
+                                    <th>Function</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>

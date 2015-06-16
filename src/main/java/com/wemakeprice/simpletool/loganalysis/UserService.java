@@ -34,13 +34,13 @@ public class UserService {
 
         User user = new User();
         user.setUserCd(arr[0]);
-        user.setUserName(arr[6]);
-        user.setJikmooCd(arr[17]);
-        user.setJikmooName(MyCommonData.getJikmoo(arr[17]));
-        user.setJikchakCd(arr[19].trim().equalsIgnoreCase("null") ? "" : arr[19]);
-        user.setJikchakName(MyCommonData.getJikchak(arr[19]));
-        user.setJikgubCd(arr[15]);
-        user.setJikgubName(MyCommonData.getJikgub(arr[15]));
+        user.setUserName(arr[1]);
+        user.setJikgubCd(arr[2]);
+        user.setJikgubName(MyCommonData.getJikgub(arr[2]));
+        user.setJikmooCd(arr[3]);
+        user.setJikmooName(MyCommonData.getJikmoo(arr[3]));
+        user.setJikchakCd(arr[4].trim().equalsIgnoreCase("null") ? "" : arr[4]);
+        user.setJikchakName(MyCommonData.getJikchak(arr[4]));
         return user;
     }
 

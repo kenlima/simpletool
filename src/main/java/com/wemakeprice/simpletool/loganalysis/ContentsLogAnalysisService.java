@@ -50,6 +50,17 @@ public class ContentsLogAnalysisService {
         return result;
     }
 
+    public List<Map<String, String>> getPageRankGroupByUrl(String fromDate, String toDate) throws Exception {
+        List<Log> allLines = getAllLogs(fromDate, toDate);
+
+        Map<String, List<Log>> groupByUrl = allLines.stream().collect(Collectors.groupingBy(Log::getUrl));
+
+        List<Map<String, String>> result = groupByUrl.entrySet().stream().sorted(sortByCount.reversed())
+                .map(entry -> getMapForUrl(entry)).collect(Collectors.toList());
+
+        return result;
+    }
+
     private Map<String, List<Log>> groupByJikmoo(String fromDate, String toDate) {
 
         List<Log> allLines = getAllLogs(fromDate, toDate);
@@ -144,8 +155,6 @@ public class ContentsLogAnalysisService {
         return false;
     }
 
-
-
     private static LocalDate parseLocalDate(String fileDay) {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMdd");
         LocalDate fld = LocalDate.parse(fileDay, dtf);
@@ -159,10 +168,10 @@ public class ContentsLogAnalysisService {
         return result;
     }
 
-    private List<GroupByUser> sortAndCollectUser(Map<String, List<Log>> groupByData,
+    private List<UserCount> sortAndCollectUser(Map<String, List<Log>> groupByData,
             Comparator<Entry<String, List<Log>>> urlComparator) {
-        List<GroupByUser> result = groupByData.entrySet().stream().sorted(urlComparator.reversed())
-                .map(entry -> mappingGroupByUser(entry)).collect(Collectors.toList());
+        List<UserCount> result = groupByData.entrySet().stream().sorted(urlComparator.reversed())
+                .map(entry -> getUserCount(entry)).collect(Collectors.toList());
         return result;
     }
 
@@ -174,8 +183,8 @@ public class ContentsLogAnalysisService {
         return map;
     }
 
-    public GroupByUser mappingGroupByUser(Entry<String, List<Log>> entry) {
-        GroupByUser groupByUser = new GroupByUser();
+    public UserCount getUserCount(Entry<String, List<Log>> entry) {
+        UserCount groupByUser = new UserCount();
         groupByUser.setUser(userService.getUser(entry.getKey()));
         groupByUser.setCount(String.valueOf(entry.getValue().size()));
         return groupByUser;
@@ -213,6 +222,17 @@ public class ContentsLogAnalysisService {
         return result;
     }
 
+    public List<UserCount> groupByUserPerUrl(String url, String fromDate, String toDate) {
+        List<Log> allLines = getAllLogs(fromDate, toDate);
+        Map<String, List<Log>> groupByUrl = allLines.stream().filter(log -> log.getUrl().equals(url))
+                .collect(Collectors.groupingBy(Log::getUserCd));
+
+        List<UserCount> result = groupByUrl.entrySet().stream().sorted(sortByCount.reversed())
+                .map(entry -> getUserCount(entry)).collect(Collectors.toList());
+
+        return result;
+    }
+
     public List<Map<String, String>> getRequestCountPerJikchak(String jikmooCd, String fromDate, String toDate) {
         Map<String, List<Log>> groupByJikmoo = groupByJikmoo(fromDate, toDate);
 
@@ -228,10 +248,10 @@ public class ContentsLogAnalysisService {
         return result;
     }
 
-    public List<GroupByUser> getPageRankGroupByUser(String fromDate, String toDate) {
+    public List<UserCount> getPageRankGroupByUser(String fromDate, String toDate) {
 
         Map<String, List<Log>> groupByUser = groupByUser(fromDate, toDate);
-        List<GroupByUser> result = sortAndCollectUser(groupByUser, sortByCount);
+        List<UserCount> result = sortAndCollectUser(groupByUser, sortByCount);
         return result;
     }
 
