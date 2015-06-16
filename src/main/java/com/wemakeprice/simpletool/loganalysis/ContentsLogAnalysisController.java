@@ -63,9 +63,10 @@ public class ContentsLogAnalysisController {
 
     @RequestMapping("/groupByUrl")
     public List<Map<String, String>> pageRankGroupByUrl(@RequestParam(value = "fromDate") String fromDate,
-            @RequestParam(value = "toDate") String toDate) throws Exception {
+            @RequestParam(value = "toDate") String toDate,
+            @RequestParam(value = "searchKeyword", required = false) String searchKeyword) throws Exception {
 
-        List<Map<String, String>> result = logReportService.getPageRankGroupByUrl(fromDate, toDate);
+        List<Map<String, String>> result = logReportService.groupByUrl(fromDate, toDate, searchKeyword);
         return result;
     }
 

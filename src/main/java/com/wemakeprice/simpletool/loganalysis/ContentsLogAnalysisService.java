@@ -50,8 +50,8 @@ public class ContentsLogAnalysisService {
         return result;
     }
 
-    public List<Map<String, String>> getPageRankGroupByUrl(String fromDate, String toDate) throws Exception {
-        List<Log> allLines = getAllLogs(fromDate, toDate);
+    public List<Map<String, String>> groupByUrl(String fromDate, String toDate, String searchKeyword) throws Exception {
+        List<Log> allLines = getAllLogs(fromDate, toDate, searchKeyword);
 
         Map<String, List<Log>> groupByUrl = allLines.stream().collect(Collectors.groupingBy(Log::getUrl));
 
@@ -63,7 +63,7 @@ public class ContentsLogAnalysisService {
 
     private Map<String, List<Log>> groupByJikmoo(String fromDate, String toDate) {
 
-        List<Log> allLines = getAllLogs(fromDate, toDate);
+        List<Log> allLines = getAllLogs(fromDate, toDate, null);
 
         Map<String, List<Log>> groupByJikmoo = allLines.stream().collect(Collectors.groupingBy(Log::getJikmooCd));
         return groupByJikmoo;
@@ -71,23 +71,24 @@ public class ContentsLogAnalysisService {
 
     private Map<String, List<Log>> groupByUser(String fromDate, String toDate) {
 
-        List<Log> allLines = getAllLogs(fromDate, toDate);
+        List<Log> allLines = getAllLogs(fromDate, toDate, null);
 
         Map<String, List<Log>> groupByUser = allLines.stream().collect(Collectors.groupingBy(Log::getUserCd));
         return groupByUser;
     }
 
-    private List<Log> getAllLogs(String fromDate, String toDate) {
+    private List<Log> getAllLogs(String fromDate, String toDate, String searchKeyword) {
 
         List<File> files = getFiles(fromDate, toDate);
 
         Stream<List<String>> lineStream = files.stream().map(ContentsLogAnalysisService::getLines);
-        List<Log> allLines = lineStream.flatMap(perLines -> perLines.stream()).filter(lineFilter())
+        List<Log> allLines = lineStream.flatMap(perLines -> perLines.stream()).filter(lineFilter(searchKeyword))
                 .map(line -> parseLine(line)).collect(Collectors.toList());
         return allLines;
     }
 
-    private static Predicate<? super String> lineFilter() {
+    private static Predicate<? super String> lineFilter(String searchKeyword) {
+
         Predicate<String> keyword1 = line -> line.contains("RequestInfo:");
         //Predicate<String> keyword2 = line -> !line.contains(".json");
         Predicate<String> keyword3 = line -> !line.contains("/contents/getContentsListFirst.wmp");
@@ -95,7 +96,10 @@ public class ContentsLogAnalysisService {
         Predicate<String> keyword5 = line -> !line.contains("/index.wmp");
         Predicate<String> keyword6 = line -> !line.contains("/contents/saveMailSender.wmp");
         //        Predicate<? super String> result = keyword1.and(keyword2).and(keyword3).and(keyword4).and(keyword5).and(keyword6); 
-        Predicate<? super String> result = keyword1.and(keyword3).and(keyword4).and(keyword5);
+        Predicate<String> result = keyword1.and(keyword3).and(keyword4).and(keyword5);
+        if (searchKeyword != null) {
+            result = result.and(line -> line.contains(searchKeyword));
+        }
         return result;
     }
 
@@ -223,7 +227,7 @@ public class ContentsLogAnalysisService {
     }
 
     public List<UserCount> groupByUserPerUrl(String url, String fromDate, String toDate) {
-        List<Log> allLines = getAllLogs(fromDate, toDate);
+        List<Log> allLines = getAllLogs(fromDate, toDate, null);
         Map<String, List<Log>> groupByUrl = allLines.stream().filter(log -> log.getUrl().equals(url))
                 .collect(Collectors.groupingBy(Log::getUserCd));
 
@@ -261,7 +265,7 @@ public class ContentsLogAnalysisService {
         List<File> files = getFiles(fromDate, toDate);
 
         Stream<List<String>> lineStream = files.stream().map(ContentsLogAnalysisService::getLines);
-        List<Log> logs = lineStream.flatMap(perLines -> perLines.stream()).filter(lineFilter())
+        List<Log> logs = lineStream.flatMap(perLines -> perLines.stream()).filter(lineFilter(null))
                 .map(line -> parseLine(line)).filter(log -> log.getUserCd().equals(userCd)).sorted(comparator)
                 .collect(Collectors.toList());
         return logs;
