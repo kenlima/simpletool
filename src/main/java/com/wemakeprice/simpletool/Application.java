@@ -34,7 +34,7 @@ public class Application {
 
     }
 
-    @Scheduled(cron = "* * 1 * * ?")
+    @Scheduled(cron = "0 0 13 * * ?")
     public void getLog() {
 
         try {
@@ -46,36 +46,60 @@ public class Application {
     }
 
     private void downloadLogFile(String serverAddress, String localDirectory) throws FileSystemException {
-        StandardFileSystemManager manager = new StandardFileSystemManager();
+        StandardFileSystemManager manager = null;
+        FileObject localFile = null;
+        FileObject remoteFile = null;
+        try {
+            manager = new StandardFileSystemManager();
 
-        String fileToDownload = "/contents-info.log." + DateUtil.getBeforeDay(1) + ".log";
-        String userId = "company";
-        String password = "";
-        String remoteDirectory = "usr/local/jboss-as/standalone/log";
+            String fileToDownload = "/contents-info.log." + DateUtil.getBeforeDay(1) + ".log";
+            String userId = "company";
+            String password = "";
+            String remoteDirectory = "usr/local/jboss-as/standalone/log";
 
-        manager.init();
+            manager.init();
 
-        FileSystemOptions opts = new FileSystemOptions();
-        SftpFileSystemConfigBuilder.getInstance().setStrictHostKeyChecking(opts, "no");
-        SftpFileSystemConfigBuilder.getInstance().setUserDirIsRoot(opts, false);
-        SftpFileSystemConfigBuilder.getInstance().setTimeout(opts, 10000);
+            FileSystemOptions opts = new FileSystemOptions();
+            SftpFileSystemConfigBuilder.getInstance().setStrictHostKeyChecking(opts, "no");
+            SftpFileSystemConfigBuilder.getInstance().setUserDirIsRoot(opts, false);
+            SftpFileSystemConfigBuilder.getInstance().setTimeout(opts, 10000);
 
-        //Create the SFTP URI using the host name, userid, password,  remote path and file name
-        String sftpUri = "sftp://" + userId + ":" + password + "@" + serverAddress + "/" + remoteDirectory
-                + fileToDownload;
+            //Create the SFTP URI using the host name, userid, password,  remote path and file name
+            String sftpUri = "sftp://" + userId + ":" + password + "@" + serverAddress + "/" + remoteDirectory
+                    + fileToDownload;
 
-        // Create local file object
+            // Create local file object
 
-        String filepath = localDirectory + fileToDownload;
-        File file = new File(filepath);
-        FileObject localFile = manager.resolveFile(file.getAbsolutePath());
+            String filepath = localDirectory + fileToDownload;
+            File file = new File(filepath);
+            localFile = manager.resolveFile(file.getAbsolutePath());
 
-        // Create remote file object
-        FileObject remoteFile = manager.resolveFile(sftpUri, opts);
+            // Create remote file object
+            remoteFile = manager.resolveFile(sftpUri, opts);
 
-        // Copy local file to sftp server
-        localFile.copyFrom(remoteFile, Selectors.SELECT_SELF);
-        System.out.println("File download successful");
+            // Copy local file to sftp server
+            localFile.copyFrom(remoteFile, Selectors.SELECT_SELF);
+            System.out.println("File download successful");
+
+        } finally {
+            if (localFile != null) {
+                try {
+                    localFile.close();
+                } catch (Exception e) {
+                    System.out.println(ExceptionUtils.getStackTrace(e));
+                }
+            }
+            if (remoteFile != null) {
+                try {
+                    remoteFile.close();
+                } catch (Exception e) {
+                    System.out.println(ExceptionUtils.getStackTrace(e));
+                }
+            }
+            if (manager != null) {
+                manager.close();
+            }
+        }
     }
 
 }
