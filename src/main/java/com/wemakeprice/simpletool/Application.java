@@ -10,6 +10,8 @@ import org.apache.commons.vfs2.FileSystemOptions;
 import org.apache.commons.vfs2.Selectors;
 import org.apache.commons.vfs2.impl.StandardFileSystemManager;
 import org.apache.commons.vfs2.provider.sftp.SftpFileSystemConfigBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -17,9 +19,13 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
+import com.wemakeprice.simpletool.loganalysis.ContentsLogAnalysisController;
+
 @SpringBootApplication
 @EnableScheduling
 public class Application {
+
+    private static final Logger logger = LoggerFactory.getLogger(Application.class);
 
     @Value("${log1.path}")
     private String log1Path;
@@ -35,17 +41,18 @@ public class Application {
     }
 
     @Scheduled(cron = "0 0 12 * * ?")
-    public void getLog() {
+    public void getLogFile() {
 
         try {
             downloadLogFile("14.49.36.128:3322", log1Path);
             downloadLogFile("14.49.36.129:3322", log2Path);
         } catch (Exception e) {
-            System.out.println(ExceptionUtils.getStackTrace(e));
+            logger.error(ExceptionUtils.getStackTrace(e));
         }
     }
 
     private void downloadLogFile(String serverAddress, String localDirectory) throws FileSystemException {
+
         StandardFileSystemManager manager = null;
         FileObject localFile = null;
         FileObject remoteFile = null;
@@ -79,21 +86,21 @@ public class Application {
 
             // Copy local file to sftp server
             localFile.copyFrom(remoteFile, Selectors.SELECT_SELF);
-            System.out.println("File download successful");
+            logger.info("File download successful. <{}>", filepath);
 
         } finally {
             if (localFile != null) {
                 try {
                     localFile.close();
                 } catch (Exception e) {
-                    System.out.println(ExceptionUtils.getStackTrace(e));
+                    logger.error(ExceptionUtils.getStackTrace(e));
                 }
             }
             if (remoteFile != null) {
                 try {
                     remoteFile.close();
                 } catch (Exception e) {
-                    System.out.println(ExceptionUtils.getStackTrace(e));
+                    logger.error(ExceptionUtils.getStackTrace(e));
                 }
             }
             if (manager != null) {

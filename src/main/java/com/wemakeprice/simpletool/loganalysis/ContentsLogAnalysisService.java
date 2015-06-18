@@ -14,6 +14,8 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,8 @@ import com.wemakeprice.simpletool.DateUtil;
 
 @Service
 public class ContentsLogAnalysisService {
+
+    private static final Logger logger = LoggerFactory.getLogger(ContentsLogAnalysisService.class);
 
     @Autowired
     public UserService userService;;
@@ -47,6 +51,7 @@ public class ContentsLogAnalysisService {
         //byJikmoo.entrySet().stream().map(entry -> entry).collect(Collectors.toMap(keyMapper, valueMapper))
 
         List<Map<String, String>> result = sortAndCollect(groupByJikmoo, sortByCount);
+
         return result;
     }
 

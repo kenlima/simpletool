@@ -5,12 +5,16 @@ import java.nio.file.Paths;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
+
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
 
     @Autowired
     public UserService(@Value("${user.file}") String userDataFile) throws Exception {
@@ -26,6 +30,7 @@ public class UserService {
     public void loadUserMap(String userDataFile) throws Exception {
         users = Files.lines(Paths.get(userDataFile)).map(UserService::parseUserLine)
                 .collect(Collectors.toMap(User::getUserCd, user -> user));
+        logger.info("User loaded");
 
     }
 
