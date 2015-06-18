@@ -34,7 +34,6 @@ $(document).ready(function() {
 });
 
 function bindResult(data) {
-	$('#dataTable > tbody').empty();
 	
 	$.each(data, function(index){
 		index++
@@ -59,21 +58,25 @@ function bindResult(data) {
 		$('#dataTable > tbody').append(tablehtml);
 	});	
 	
-	
 }
 
 function bindData(requestData) {
 	$.ajax({
 		type :"GET",
 		url : "/rest/groupByUrl",
+		beforeSend: function (xhr) {
+			$('#loadingCircle').empty();
+			$('#dataTable > tbody').empty();
+			$('#loadingCircle').append('<span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>');
+		},
 		cache : false,
 		data : requestData
-	}).then(function(data){
+	}).done(function(data){
 		bindResult(data)	
 		
 		//perUrl click
 		$('a#perUsers').on('click', function (event) {
-		
+			
 			$('#perUsers > tbody').empty();
 			
 			var url = $(this).data('url')
@@ -90,6 +93,9 @@ function bindData(requestData) {
 			$.ajax({
 				type :"GET",
 				url : "/rest/groupByUserPerUrl?url=" + url + "&fromDate=" + fromDate + "&toDate=" + toDate,
+				beforeSend: function() {
+					$('#modalLoadingCircle').append('<span class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>');
+				},
 				cache : false
 			}).then(function(data){
 	    		$.each(data, function(index){
@@ -106,7 +112,16 @@ function bindData(requestData) {
 	    			$('#perUsers > tbody').append(tablehtml);
 	    		})
 			})
+			.always(function() {
+				$('#modalLoadingCircle').empty();
+			})
 		}) //perUrl click end 
+	})
+	.fail(function(jqXHR, status, e) {
+		alert(jqXHR.responseText);
+	})
+	.always(function() {
+		$('#loadingCircle').empty();
 	})
 }
 

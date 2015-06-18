@@ -14,6 +14,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,13 +57,22 @@ public class ContentsLogAnalysisService {
     }
 
     public List<Map<String, String>> groupByUrl(String fromDate, String toDate, String searchKeyword) throws Exception {
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
         List<Log> allLines = getAllLogs(fromDate, toDate, searchKeyword);
+        stopWatch.split();
+        logger.info("File read time:" + stopWatch.toSplitString());
 
         Map<String, List<Log>> groupByUrl = allLines.stream().collect(Collectors.groupingBy(Log::getUrl));
+        stopWatch.split();
+        logger.info("Group by time:" + stopWatch.toSplitString());
 
         List<Map<String, String>> result = groupByUrl.entrySet().stream().sorted(sortByCount.reversed())
                 .map(entry -> getMapForUrl(entry)).collect(Collectors.toList());
+        stopWatch.stop();
 
+        logger.info("Mapping time:" + stopWatch);
         return result;
     }
 
@@ -89,6 +99,7 @@ public class ContentsLogAnalysisService {
         Stream<List<String>> lineStream = files.stream().map(ContentsLogAnalysisService::getLines);
         List<Log> allLines = lineStream.flatMap(perLines -> perLines.stream()).filter(lineFilter(searchKeyword))
                 .map(line -> parseLine(line)).collect(Collectors.toList());
+
         return allLines;
     }
 
