@@ -2,6 +2,7 @@ package com.wemakeprice.simpletool;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.commons.vfs2.FileObject;
@@ -18,8 +19,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
-
-import com.wemakeprice.simpletool.loganalysis.ContentsLogAnalysisController;
 
 @SpringBootApplication
 @EnableScheduling
@@ -38,6 +37,11 @@ public class Application {
 
         System.out.println("Let's inspect the beans provided by Spring Boot:");
 
+        String[] beanNames = ctx.getBeanDefinitionNames();
+        Arrays.sort(beanNames);
+        for (String beanName : beanNames) {
+            System.out.println(beanName);
+        }
     }
 
     @Scheduled(cron = "0 0 1 * * ?")

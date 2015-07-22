@@ -1,4 +1,4 @@
-package com.wemakeprice.simpletool.sqlmapformatter;
+package com.wemakeprice.simpletool.sqllogformat;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,11 +11,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class SqlMapFormatterController {
 
     @Autowired
-    private SqlMapFormatterService sqlMapFormatterService;
+    private SqlLogFormatService sqlMapFormatterService;
 
     @RequestMapping(value = "/formattedSql", method = RequestMethod.POST)
-    public SqlMappingResult formattedSql(@RequestParam(value = "inputSql") String inputSql) throws Exception {
-        SqlMappingResult result = sqlMapFormatterService.mappingSql(inputSql);
+    public FormattedWithBindSql formattedSql(@RequestParam(value = "inputSql") String inputSql) throws Exception {
+        FormattedWithBindSql result = sqlMapFormatterService.formatting(inputSql);
         return result;
     }
 }
